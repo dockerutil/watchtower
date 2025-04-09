@@ -3,10 +3,10 @@ package notifications
 import (
 	"time"
 
-	"github.com/containrrr/shoutrrr/pkg/types"
-	"github.com/containrrr/watchtower/internal/actions/mocks"
-	"github.com/containrrr/watchtower/internal/flags"
-	s "github.com/containrrr/watchtower/pkg/session"
+	"github.com/dockerutil/shoutrrr/pkg/types"
+	"github.com/dockerutil/watchtower/internal/actions/mocks"
+	"github.com/dockerutil/watchtower/internal/flags"
+	s "github.com/dockerutil/watchtower/pkg/session"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"

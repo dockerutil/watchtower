@@ -7,18 +7,19 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/containrrr/watchtower/internal/util"
-	wt "github.com/containrrr/watchtower/pkg/types"
+	"github.com/dockerutil/watchtower/internal/util"
+	wt "github.com/dockerutil/watchtower/pkg/types"
 	"github.com/sirupsen/logrus"
 
 	"github.com/docker/docker/api/types"
 	dockercontainer "github.com/docker/docker/api/types/container"
+	dockerimage "github.com/docker/docker/api/types/image"
 	"github.com/docker/go-connections/nat"
 )
 
 // NewContainer returns a new Container instance instantiated with the
-// specified ContainerInfo and ImageInfo structs.
-func NewContainer(containerInfo *types.ContainerJSON, imageInfo *types.ImageInspect) *Container {
+// specified InspectResponse structs.
+func NewContainer(containerInfo *dockercontainer.InspectResponse, imageInfo *dockerimage.InspectResponse) *Container {
 	return &Container{
 		containerInfo: containerInfo,
 		imageInfo:     imageInfo,
@@ -30,8 +31,8 @@ type Container struct {
 	LinkedToRestarting bool
 	Stale              bool
 
-	containerInfo *types.ContainerJSON
-	imageInfo     *types.ImageInspect
+	containerInfo *dockercontainer.InspectResponse
+	imageInfo     *dockerimage.InspectResponse
 }
 
 // IsLinkedToRestarting returns the current value of the LinkedToRestarting field for the container

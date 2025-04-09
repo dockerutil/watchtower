@@ -1,16 +1,18 @@
 package container
 
 import (
-	"github.com/docker/docker/api/types/network"
 	"time"
 
-	"github.com/containrrr/watchtower/internal/util"
-	"github.com/containrrr/watchtower/pkg/container/mocks"
-	"github.com/containrrr/watchtower/pkg/filters"
-	t "github.com/containrrr/watchtower/pkg/types"
+	"github.com/docker/docker/api/types/network"
+
+	"github.com/dockerutil/watchtower/internal/util"
+	"github.com/dockerutil/watchtower/pkg/container/mocks"
+	"github.com/dockerutil/watchtower/pkg/filters"
+	t "github.com/dockerutil/watchtower/pkg/types"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/backend"
+	dockercontainer "github.com/docker/docker/api/types/container"
 	cli "github.com/docker/docker/client"
 	"github.com/docker/docker/errdefs"
 	"github.com/onsi/gomega/gbytes"
@@ -78,8 +80,8 @@ var _ = Describe("the client", func() {
 	When("removing a running container", func() {
 		When("the container still exist after stopping", func() {
 			It("should attempt to remove the container", func() {
-				container := MockContainer(WithContainerState(types.ContainerState{Running: true}))
-				containerStopped := MockContainer(WithContainerState(types.ContainerState{Running: false}))
+				container := MockContainer(WithContainerState(dockercontainer.State{Running: true}))
+				containerStopped := MockContainer(WithContainerState(dockercontainer.State{Running: false}))
 
 				cid := container.ContainerInfo().ID
 				mockServer.AppendHandlers(
@@ -94,7 +96,7 @@ var _ = Describe("the client", func() {
 		})
 		When("the container does not exist after stopping", func() {
 			It("should not cause an error", func() {
-				container := MockContainer(WithContainerState(types.ContainerState{Running: true}))
+				container := MockContainer(WithContainerState(dockercontainer.State{Running: true}))
 
 				cid := container.ContainerInfo().ID
 				mockServer.AppendHandlers(
@@ -270,7 +272,7 @@ var _ = Describe("the client", func() {
 					// API.ContainerExecCreate
 					ghttp.CombineHandlers(
 						ghttp.VerifyRequest("POST", HaveSuffix("containers/%v/exec", containerID)),
-						ghttp.VerifyJSONRepresenting(types.ExecConfig{
+						ghttp.VerifyJSONRepresenting(dockercontainer.ExecOptions{
 							User:   user,
 							Detach: false,
 							Tty:    true,
@@ -285,7 +287,7 @@ var _ = Describe("the client", func() {
 					// API.ContainerExecStart
 					ghttp.CombineHandlers(
 						ghttp.VerifyRequest("POST", HaveSuffix("exec/%v/start", execID)),
-						ghttp.VerifyJSONRepresenting(types.ExecStartCheck{
+						ghttp.VerifyJSONRepresenting(dockercontainer.ExecStartOptions{
 							Detach: false,
 							Tty:    true,
 						}),
