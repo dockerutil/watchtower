@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/docker/docker/api/types"
 	dockerContainer "github.com/docker/docker/api/types/container"
 	dockerImage "github.com/docker/docker/api/types/image"
 	"github.com/docker/go-connections/nat"
@@ -87,7 +86,7 @@ func CreateMockContainerWithConfig(id string, name string, image string, running
 			ID:    id,
 			Image: image,
 			Name:  name,
-			State: &types.ContainerState{
+			State: &dockerContainer.State{
 				Running:    running,
 				Restarting: restarting,
 			},
