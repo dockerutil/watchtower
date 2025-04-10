@@ -74,7 +74,7 @@ jobs:
         username: ${{ secrets.HUB_REGISTRY_USERNAME }}
         password: ${{ secrets.HUB_REGISTRY_PASSWORD }}
         registry: docker.io/cremator
-        
+
     - name: Push To quay.io
       id: push-to-quay
       uses: redhat-actions/push-to-registry@v2
@@ -97,13 +97,13 @@ jobs:
     - name: Print ghcr image url
       run: echo "Image pushed to ${{ steps.push-to-ghcr.outputs.registry-paths }}"
 
-    - name: Push To GHCR.io
+    - name: Push To docker hub
       id: push-to-hub
       uses: redhat-actions/push-to-registry@v2
       with:
         image: ${{ steps.build-image.outputs.image }}
         tags: ${{ steps.build-image.outputs.tags }}
-        registry: ghcr.io/dockerutil
+        registry: docker.io/cremator
 
     - name: Print hub image url
       run: echo "Image pushed to ${{ steps.push-to-hub.outputs.registry-paths }}"
