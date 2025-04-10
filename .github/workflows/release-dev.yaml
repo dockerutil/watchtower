@@ -29,23 +29,11 @@ jobs:
           go-version: 1.24.x
       - name: Test
         run: go test -v -coverprofile coverage.out -covermode atomic ./... 
-  login:
-    name: Log in to image registry
-    runs-on: ubuntu-20.04
-    steps:
-
-      - name: Log in to Quay.io
-        uses: redhat-actions/podman-login@v1
-        with:
-          username: ${{ secrets.QUAY_REGISTRY_USERNAME }}
-          password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
-          registry: quay.io
-
+  
   publish:
     needs:
       - build
       - test
-      - login
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -56,6 +44,12 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: 1.24.x
+    - name: Log in to Quay.io
+      uses: redhat-actions/podman-login@v1
+      with:
+        username: ${{ secrets.QUAY_REGISTRY_USERNAME }}
+        password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+        registry: quay.io/dockerutil
     - name: Build Image
       id: build-image
       uses: redhat-actions/buildah-build@v2
