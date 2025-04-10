@@ -53,6 +53,12 @@ jobs:
         username: ${{ secrets.QUAY_REGISTRY_USERNAME }}
         password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
         registry: quay.io/dockerutil
+    - name: Log in to GHCR.io
+      uses: redhat-actions/podman-login@v1
+      with:
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+        registry: ghcr.io/dockerutil
     - name: Build Image
       id: build-image
       uses: redhat-actions/buildah-build@v2
@@ -70,22 +76,16 @@ jobs:
         tags: ${{ steps.build-image.outputs.tags }}
         registry: quay.io/dockerutil
 
-    - name: Print image url
+    - name: Print quay image url
       run: echo "Image pushed to ${{ steps.push-to-quay.outputs.registry-paths }}"
 
-    - name: Push To GHCR
-      uses: ./
+    - name: Push To GHCR.io
       id: push-to-ghcr
+      uses: redhat-actions/push-to-registry@v2
       with:
         image: ${{ steps.build-image.outputs.image }}
         tags: ${{ steps.build-image.outputs.tags }}
         registry: ghcr.io/dockerutil
-        username: ${{ github.actor }}
-        password: ${{ github.token }}
-        extra-args: |
-          --disable-content-trust
-          --label org.opencontainers.image.source=${{ github.event.repository.clone_url }}
 
-    - name: Echo outputs
-      run: |
-        echo "${{ toJSON(steps.push-to-ghcr.outputs) }}"
+    - name: Print ghcr image url
+      run: echo "Image pushed to ${{ steps.push-to-ghcr.outputs.registry-paths }}"
