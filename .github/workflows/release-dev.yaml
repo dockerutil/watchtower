@@ -29,31 +29,39 @@ jobs:
           go-version: 1.24.x
       - name: Test
         run: go test -v -coverprofile coverage.out -covermode atomic ./... 
-      - name: Publish coverage
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+
   publish:
     needs:
       - build
       - test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Publish to Docker Hub
-        uses: jerray/publish-docker-action@87d84711629b0dc9f6bb127b568413cc92a2088e #master@2022-10-14
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          file: dockerfiles/Dockerfile.self-contained
-          repository: containrrr/watchtower
-          tags: latest-dev
-      - name: Publish to GHCR
-        uses: jerray/publish-docker-action@87d84711629b0dc9f6bb127b568413cc92a2088e #master@2022-10-14
-        with:
-          username: ${{ secrets.BOT_USERNAME }}
-          password: ${{ secrets.BOT_GHCR_PAT }}
-          file: dockerfiles/Dockerfile.self-contained
-          registry: ghcr.io
-          repository: containrrr/watchtower
-          tags: latest-dev
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: 1.24.x
+    - name: Build Image
+      id: build-image
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: watchtower
+        tags: latest-dev
+        containerfiles: |
+          ./dockerfiles/Dockerfile.self-contained
+
+    - name: Push To quay.io
+      id: push-to-quay
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build-image.outputs.image }}
+        tags: ${{ steps.build-image.outputs.tags }}
+        registry: quay.io/dockerutil
+        username: ${{ secrets.QUAY_REGISTRY_USERNAME }}
+        password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+
+    - name: Print image url
+      run: echo "Image pushed to ${{ steps.push-to-quay.outputs.registry-paths }}"
