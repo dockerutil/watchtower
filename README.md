@@ -6,21 +6,19 @@
   A process for automating Docker container base image updates.
   <br/><br/>
   
-  [![Circle CI](https://circleci.com/gh/containrrr/watchtower.svg?style=shield)](https://circleci.com/gh/containrrr/watchtower)
-  [![codecov](https://codecov.io/gh/containrrr/watchtower/branch/main/graph/badge.svg)](https://codecov.io/gh/containrrr/watchtower)
+  [![codecov](https://codecov.io/gh/dockerutil/watchtower/branch/main/graph/badge.svg)](https://codecov.io/gh/dockerutil/watchtower)
   [![GoDoc](https://godoc.org/github.com/dockerutil/watchtower?status.svg)](https://godoc.org/github.com/dockerutil/watchtower)
   [![Go Report Card](https://goreportcard.com/badge/github.com/dockerutil/watchtower)](https://goreportcard.com/report/github.com/dockerutil/watchtower)
   [![latest version](https://img.shields.io/github/tag/containrrr/watchtower.svg)](https://github.com/dockerutil/watchtower/releases)
-  [![Apache-2.0 License](https://img.shields.io/github/license/containrrr/watchtower.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-  [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1c48cfb7646d4009aa8c6f71287670b8)](https://www.codacy.com/gh/containrrr/watchtower/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=containrrr/watchtower&amp;utm_campaign=Badge_Grade)
-  [![All Contributors](https://img.shields.io/github/all-contributors/containrrr/watchtower)](#contributors)
-  [![Pulls from DockerHub](https://img.shields.io/docker/pulls/containrrr/watchtower.svg)](https://hub.docker.com/r/containrrr/watchtower)
+  [![Apache-2.0 License](https://img.shields.io/github/license/dockerutil/watchtower.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+  [![Codacy Badge](https://app.codacy.com/project/badge/Grade/6c1f1828a5304a169407f22e9f44a567)](https://app.codacy.com/gh/dockerutil/watchtower/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+  [![All Contributors](https://img.shields.io/github/all-contributors/dockerutil/watchtower)](#contributors)
 
 </div>
 
 ## Quick Start
 
-With watchtower you can update the running version of your containerized app simply by pushing a new image to the Docker Hub or your own image registry. 
+With watchtower you can update the running version of your containerized app simply by pushing a new image to the Docker Hub, quay.io, ghcr.io or your own image registry. 
 
 Watchtower will pull down your new image, gracefully shut down your existing container and restart it with the same options that were used when it was deployed initially. Run the watchtower container with the following command:
 
@@ -28,7 +26,7 @@ Watchtower will pull down your new image, gracefully shut down your existing con
 $ docker run --detach \
     --name watchtower \
     --volume /var/run/docker.sock:/var/run/docker.sock \
-    containrrr/watchtower
+    quay.io/dockerutil/watchtower
 ```
 
 Watchtower is intended to be used in homelabs, media centers, local dev environments, and similar. We do **not** recommend using Watchtower in a commercial or production environment. If that is you, you should be looking into using Kubernetes. If that feels like too big a step for you, please look into solutions like [MicroK8s](https://microk8s.io/) and [k3s](https://k3s.io/) that take away a lot of the toil of running a Kubernetes cluster. 
