@@ -21,7 +21,7 @@ jobs:
           go-version: 1.24.x
       - uses: dominikh/staticcheck-action@fe1dd0c3658873b46f8c9bb3291096a617310ca6 #v1.3.1
         with:
-          version: "2023.1.6"
+          version: "latest"
           install-go: "false" # StaticCheck uses go v1.17 which does not support `any`
   test:
     name: Test
@@ -29,7 +29,7 @@ jobs:
       fail-fast: false
       matrix:
         go-version:
-          - 1.20.x
+          - 1.24.x
         platform:
           - macos-latest
           - windows-latest

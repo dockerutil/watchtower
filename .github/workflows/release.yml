@@ -67,17 +67,25 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 1.24.x
+      
+      - name: Login to Quay.io
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.QUAY_REGISTRY_USERNAME }}
+          password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+          registry: quay.io/dockerutil
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io/dockerutil
       - name: Login to Docker Hub
-        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc #v2
+        uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Login to GHCR
-        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc #v2
-        with:
-          username: ${{ secrets.BOT_USERNAME }}
-          password: ${{ secrets.BOT_GHCR_PAT }}
-          registry: ghcr.io
+          username: ${{ secrets.HUB_REGISTRY_USERNAME }}
+          password: ${{ secrets.HUB_REGISTRY_PASSWORD }}
+          registry: docker.io/cremator
       - name: Build
         uses: goreleaser/goreleaser-action@7ec5c2b0c6cdda6e8bbb49444bc797dd33d74dd8 #v3
         with:
@@ -85,44 +93,47 @@ jobs:
           args: --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Enable experimental docker features
-        run: |
-          mkdir -p ~/.docker/ && \
-          echo '{"experimental": "enabled"}' > ~/.docker/config.json
+
       - name: Create manifest for version
         run: |
           export DH_TAG=$(git tag --points-at HEAD | sed 's/^v*//')
           docker manifest create \
-            containrrr/watchtower:$DH_TAG \
-            containrrr/watchtower:amd64-$DH_TAG \
-            containrrr/watchtower:i386-$DH_TAG \
-            containrrr/watchtower:armhf-$DH_TAG \
-            containrrr/watchtower:arm64v8-$DH_TAG
+            cremator/watchtower:$DH_TAG \
+            cremator/watchtower:amd64-$DH_TAG \
+            cremator/watchtower:i386-$DH_TAG \
+            cremator/watchtower:armhf-$DH_TAG \
+            cremator/watchtower:arm64v8-$DH_TAG
           docker manifest create \
-            ghcr.io/containrrr/watchtower:$DH_TAG \
-            ghcr.io/containrrr/watchtower:amd64-$DH_TAG \
-            ghcr.io/containrrr/watchtower:i386-$DH_TAG \
-            ghcr.io/containrrr/watchtower:armhf-$DH_TAG \
-            ghcr.io/containrrr/watchtower:arm64v8-$DH_TAG
+            ghcr.io/dockerutil/watchtower:$DH_TAG \
+            ghcr.io/dockerutil/watchtower:amd64-$DH_TAG \
+            ghcr.io/dockerutil/watchtower:i386-$DH_TAG \
+            ghcr.io/dockerutil/watchtower:armhf-$DH_TAG \
+            ghcr.io/dockerutil/watchtower:arm64v8-$DH_TAG
+          docker manifest create \
+            quay.io/dockerutil/watchtower:$DH_TAG \
+            quay.io/dockerutil/watchtower:amd64-$DH_TAG \
+            quay.io/dockerutil/watchtower:i386-$DH_TAG \
+            quay.io/dockerutil/watchtower:armhf-$DH_TAG \
+            quay.io/dockerutil/watchtower:arm64v8-$DH_TAG
       - name: Annotate manifest for version
         run: |
-          for REPO in '' ghcr.io/ ; do
+          for REPO in cremator/ ghcr.io/dockerutil/ quay.io/dockerutil/; do
           
           docker manifest annotate \
-            ${REPO}containrrr/watchtower:$(echo $TAG | sed 's/^v*//') \
-            ${REPO}containrrr/watchtower:i386-$(echo $TAG | sed 's/^v*//') \
+            ${REPO}watchtower:$(echo $TAG | sed 's/^v*//') \
+            ${REPO}watchtower:i386-$(echo $TAG | sed 's/^v*//') \
             --os linux \
             --arch 386
           
           docker manifest annotate \
-            ${REPO}containrrr/watchtower:$(echo $TAG | sed 's/^v*//') \
-            ${REPO}containrrr/watchtower:armhf-$(echo $TAG | sed 's/^v*//') \
+            ${REPO}watchtower:$(echo $TAG | sed 's/^v*//') \
+            ${REPO}watchtower:armhf-$(echo $TAG | sed 's/^v*//') \
             --os linux \
             --arch arm
       
           docker manifest annotate \
-            ${REPO}containrrr/watchtower:$(echo $TAG | sed 's/^v*//') \
-            ${REPO}containrrr/watchtower:arm64v8-$(echo $TAG | sed 's/^v*//') \
+            ${REPO}watchtower:$(echo $TAG | sed 's/^v*//') \
+            ${REPO}watchtower:arm64v8-$(echo $TAG | sed 's/^v*//') \
             --os linux \
             --arch arm64 \
             --variant v8
@@ -131,57 +142,59 @@ jobs:
       - name: Create manifest for latest
         run: |
           docker manifest create \
-            containrrr/watchtower:latest \
-            containrrr/watchtower:amd64-latest \
-            containrrr/watchtower:i386-latest \
-            containrrr/watchtower:armhf-latest \
-            containrrr/watchtower:arm64v8-latest
+            cremator/watchtower:latest \
+            cremator/watchtower:amd64-latest \
+            cremator/watchtower:i386-latest \
+            cremator/watchtower:armhf-latest \
+            cremator/watchtower:arm64v8-latest
           docker manifest create \
-            ghcr.io/containrrr/watchtower:latest \
-            ghcr.io/containrrr/watchtower:amd64-latest \
-            ghcr.io/containrrr/watchtower:i386-latest \
-            ghcr.io/containrrr/watchtower:armhf-latest \
-            ghcr.io/containrrr/watchtower:arm64v8-latest
+            ghcr.io/dockerutil/watchtower:latest \
+            ghcr.io/dockerutil/watchtower:amd64-latest \
+            ghcr.io/dockerutil/watchtower:i386-latest \
+            ghcr.io/dockerutil/watchtower:armhf-latest \
+            ghcr.io/dockerutil/watchtower:arm64v8-latest
+          docker manifest create \
+            quay.io/dockerutil/watchtower:latest \
+            quay.io/dockerutil/watchtower:amd64-latest \
+            quay.io/dockerutil/watchtower:i386-latest \
+            quay.io/dockerutil/watchtower:armhf-latest \
+            quay.io/dockerutil/watchtower:arm64v8-latest
       - name: Annotate manifest for latest
         run: |
-          for REPO in '' ghcr.io/ ; do
+          for REPO in cremator/ ghcr.io/dockerutil/ quay.io/dockerutil/ ; do
 
           docker manifest annotate \
-            ${REPO}containrrr/watchtower:latest \
-            ${REPO}containrrr/watchtower:i386-latest \
+            ${REPO}watchtower:latest \
+            ${REPO}watchtower:i386-latest \
             --os linux \
             --arch 386
       
           docker manifest annotate \
-            ${REPO}containrrr/watchtower:latest \
-            ${REPO}containrrr/watchtower:armhf-latest \
+            ${REPO}watchtower:latest \
+            ${REPO}watchtower:armhf-latest \
             --os linux \
             --arch arm
             
           docker manifest annotate \
-            ${REPO}containrrr/watchtower:latest \
-            ${REPO}containrrr/watchtower:arm64v8-latest \
+            ${REPO}watchtower:latest \
+            ${REPO}watchtower:arm64v8-latest \
             --os linux \
             --arch arm64 \
             --variant v8
 
           done
       - name: Push manifests to Dockerhub
-        env:
-          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKER_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          docker login -u $DOCKER_USER -p $DOCKER_TOKEN && \
-            docker manifest push containrrr/watchtower:$(echo $TAG | sed 's/^v*//') && \
-            docker manifest push containrrr/watchtower:latest
+            docker manifest push cremator/watchtower:$(echo $TAG | sed 's/^v*//') && \
+            docker manifest push cremator/watchtower:latest
       - name: Push manifests to GitHub Container Registry
-        env:
-          DOCKER_USER: ${{ secrets.BOT_USERNAME }}
-          DOCKER_TOKEN: ${{ secrets.BOT_GHCR_PAT }}
         run: |
-          docker login -u $DOCKER_USER -p $DOCKER_TOKEN ghcr.io && \
-            docker manifest push ghcr.io/containrrr/watchtower:$(echo $TAG | sed 's/^v*//') && \
-            docker manifest push ghcr.io/containrrr/watchtower:latest
+            docker manifest push ghcr.io/dockerutil/watchtower:$(echo $TAG | sed 's/^v*//') && \
+            docker manifest push ghcr.io/dockerutil/watchtower:latest
+      - name: Push manifests to quay.io Container Registry
+        run: |
+            docker manifest push quay.io/dockerutil/watchtower:$(echo $TAG | sed 's/^v*//') && \
+            docker manifest push quay.io/dockerutil/watchtower:latest
 
   renew-docs:
     name: Refresh pkg.go.dev

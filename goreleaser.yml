@@ -36,10 +36,12 @@ dockers:
     goarm: ''
     dockerfile: dockerfiles/Dockerfile
     image_templates:
-      - containrrr/watchtower:amd64-{{ .Version }}
-      - containrrr/watchtower:amd64-latest
-      - ghcr.io/containrrr/watchtower:amd64-{{ .Version }}
-      - ghcr.io/containrrr/watchtower:amd64-latest
+      - cremator/watchtower:amd64-{{ .Version }}
+      - cremator/watchtower:amd64-latest
+      - ghcr.io/dockerutil/watchtower:amd64-{{ .Version }}
+      - ghcr.io/dockerutil/watchtower:amd64-latest
+      - quay.io/dockerutil/watchtower:amd64-{{ .Version }}
+      - quay.io/dockerutil/watchtower:amd64-latest
     binaries:
       - watchtower
   - 
@@ -50,10 +52,12 @@ dockers:
     goarm: ''
     dockerfile: dockerfiles/Dockerfile
     image_templates:
-      - containrrr/watchtower:i386-{{ .Version }}
-      - containrrr/watchtower:i386-latest
-      - ghcr.io/containrrr/watchtower:i386-{{ .Version }}
-      - ghcr.io/containrrr/watchtower:i386-latest
+      - cremator/watchtower:i386-{{ .Version }}
+      - cremator/watchtower:i386-latest
+      - ghcr.io/dockerutil/watchtower:i386-{{ .Version }}
+      - ghcr.io/dockerutil/watchtower:i386-latest
+      - quay.io/dockerutil/watchtower:i386-{{ .Version }}
+      - quay.io/dockerutil/watchtower:i386-latest
     binaries:
       - watchtower
   - 
@@ -64,10 +68,12 @@ dockers:
     goarm: 6
     dockerfile: dockerfiles/Dockerfile
     image_templates:
-      - containrrr/watchtower:armhf-{{ .Version }}
-      - containrrr/watchtower:armhf-latest
-      - ghcr.io/containrrr/watchtower:armhf-{{ .Version }}
-      - ghcr.io/containrrr/watchtower:armhf-latest
+      - cremator/watchtower:armhf-{{ .Version }}
+      - cremator/watchtower:armhf-latest
+      - ghcr.io/dockerutil/watchtower:armhf-{{ .Version }}
+      - ghcr.io/dockerutil/watchtower:armhf-latest
+      - quay.io/dockerutil/watchtower:armhf-{{ .Version }}
+      - quay.io/dockerutil/watchtower:armhf-latest
     binaries:
       - watchtower
   - 
@@ -78,9 +84,11 @@ dockers:
     goarm: ''
     dockerfile: dockerfiles/Dockerfile
     image_templates:
-      - containrrr/watchtower:arm64v8-{{ .Version }}
-      - containrrr/watchtower:arm64v8-latest
-      - ghcr.io/containrrr/watchtower:arm64v8-{{ .Version }}
-      - ghcr.io/containrrr/watchtower:arm64v8-latest
+      - cremator/watchtower:arm64v8-{{ .Version }}
+      - cremator/watchtower:arm64v8-latest
+      - ghcr.io/dockerutil/watchtower:arm64v8-{{ .Version }}
+      - ghcr.io/dockerutil/watchtower:arm64v8-latest
+      - quay.io/dockerutil/watchtower:arm64v8-{{ .Version }}
+      - quay.io/dockerutil/watchtower:arm64v8-latest
     binaries:
       - watchtower
