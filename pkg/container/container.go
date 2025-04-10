@@ -11,7 +11,6 @@ import (
 	wt "github.com/dockerutil/watchtower/pkg/types"
 	"github.com/sirupsen/logrus"
 
-	"github.com/docker/docker/api/types"
 	dockercontainer "github.com/docker/docker/api/types/container"
 	dockerimage "github.com/docker/docker/api/types/image"
 	"github.com/docker/go-connections/nat"
@@ -56,7 +55,7 @@ func (c *Container) SetStale(value bool) {
 }
 
 // ContainerInfo fetches JSON info for the container
-func (c Container) ContainerInfo() *types.ContainerJSON {
+func (c Container) ContainerInfo() *dockercontainer.InspectResponse {
 	return c.containerInfo
 }
 
@@ -369,7 +368,7 @@ func (c Container) HasImageInfo() bool {
 }
 
 // ImageInfo fetches the ImageInspect data of the current container
-func (c Container) ImageInfo() *types.ImageInspect {
+func (c Container) ImageInfo() *dockerimage.InspectResponse {
 	return c.imageInfo
 }
 

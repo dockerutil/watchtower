@@ -332,7 +332,7 @@ func (client dockerClient) HasNewImage(ctx context.Context, container t.Containe
 	currentImageID := t.ImageID(container.ContainerInfo().ContainerJSONBase.Image)
 	imageName := container.ImageName()
 
-	newImageInfo, _, err := client.api.ImageInspectWithRaw(ctx, imageName)
+	newImageInfo, err := client.api.ImageInspect(ctx, imageName)
 	if err != nil {
 		return false, currentImageID, err
 	}

@@ -10,7 +10,6 @@ import (
 	"github.com/dockerutil/watchtower/pkg/filters"
 	t "github.com/dockerutil/watchtower/pkg/types"
 
-	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/backend"
 	dockercontainer "github.com/docker/docker/api/types/container"
 	cli "github.com/docker/docker/client"
@@ -282,7 +281,7 @@ var _ = Describe("the client", func() {
 								cmd,
 							},
 						}),
-						ghttp.RespondWithJSONEncoded(http.StatusOK, types.IDResponse{ID: execID}),
+						ghttp.RespondWithJSONEncoded(http.StatusOK, dockercontainer.CommitResponse{ID: execID}),
 					),
 					// API.ContainerExecStart
 					ghttp.CombineHandlers(
@@ -331,7 +330,7 @@ var _ = Describe("the client", func() {
 				endpoints := map[string]*network.EndpointSettings{
 					`test`: {Aliases: aliases},
 				}
-				container.containerInfo.NetworkSettings = &types.NetworkSettings{Networks: endpoints}
+				container.containerInfo.NetworkSettings = &dockercontainer.NetworkSettings{Networks: endpoints}
 				Expect(container.ContainerInfo().NetworkSettings.Networks[`test`].Aliases).To(Equal(aliases))
 				Expect(client.GetNetworkConfig(container).EndpointsConfig[`test`].Aliases).To(Equal([]string{"One", "Two", "Four"}))
 			})

@@ -3,11 +3,11 @@ package actions_test
 import (
 	"time"
 
+	dockerContainer "github.com/docker/docker/api/types/container"
+	dockerImage "github.com/docker/docker/api/types/image"
+	"github.com/docker/go-connections/nat"
 	"github.com/dockerutil/watchtower/internal/actions"
 	"github.com/dockerutil/watchtower/pkg/types"
-	dockerTypes "github.com/docker/docker/api/types"
-	dockerContainer "github.com/docker/docker/api/types/container"
-	"github.com/docker/go-connections/nat"
 
 	. "github.com/dockerutil/watchtower/internal/actions/mocks"
 	. "github.com/onsi/ginkgo"
@@ -44,7 +44,7 @@ func getLinkedTestData(withImageInfo bool) *TestData {
 		"fake-image1:latest",
 		time.Now().AddDate(0, 0, -1))
 
-	var imageInfo *dockerTypes.ImageInspect
+	var imageInfo *dockerImage.InspectResponse
 	if withImageInfo {
 		imageInfo = CreateMockImageInfo("test-container-02")
 	}

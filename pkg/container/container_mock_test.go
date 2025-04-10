@@ -1,7 +1,6 @@
 package container
 
 import (
-	"github.com/docker/docker/api/types"
 	dockerContainer "github.com/docker/docker/api/types/container"
 	dockerImage "github.com/docker/docker/api/types/image"
 	"github.com/docker/go-connections/nat"
@@ -61,7 +60,7 @@ func WithLabels(labels map[string]string) MockContainerUpdate {
 	}
 }
 
-func WithContainerState(state types.ContainerState) MockContainerUpdate {
+func WithContainerState(state dockerContainer.State) MockContainerUpdate {
 	return func(cnt *dockerContainer.InspectResponse, img *dockerImage.InspectResponse) {
 		cnt.State = &state
 	}
