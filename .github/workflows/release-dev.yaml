@@ -72,3 +72,20 @@ jobs:
 
     - name: Print image url
       run: echo "Image pushed to ${{ steps.push-to-quay.outputs.registry-paths }}"
+
+    - name: Push To GHCR
+      uses: ./
+      id: push-to-ghcr
+      with:
+        image: ${{ steps.build-image.outputs.image }}
+        tags: ${{ steps.build-image.outputs.tags }}
+        registry: ghcr.io/dockerutil
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+        extra-args: |
+          --disable-content-trust
+          --label org.opencontainers.image.source=${{ github.event.repository.clone_url }}
+
+    - name: Echo outputs
+      run: |
+        echo "${{ toJSON(steps.push-to-ghcr.outputs) }}"
